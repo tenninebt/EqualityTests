@@ -10,13 +10,17 @@ namespace EqualityTests
 {
     public static class EqualityTestsFor<T> where T : class
     {
-        public static void Assert()
+        public static void Assert(IFixture fixture)
         {
-            var fixture = new Fixture();
             var compositeAssertion =
                 new CompositeIdiomaticAssertion(EqualityAssertions(fixture, new EqualityTestCaseProvider(fixture)));
 
             VerifyCompositeAssertion(compositeAssertion);
+        }
+
+        public static void Assert()
+        {
+            Assert(new Fixture());
         }
 
         public static void Assert(Func<EqualityTestsConfiguration<T>> configuration)
@@ -44,6 +48,7 @@ namespace EqualityTests
             yield return new EqualsTransitiveAssertion(specimenBuilder);
             yield return new EqualsSuccessiveAssertion(specimenBuilder);
             yield return new EqualsNullAssertion(specimenBuilder);
+            yield return new EqualsTypeAssertion<T>(specimenBuilder);
             yield return new EqualsValueCheckAssertion(equalityTestCaseProvider);
             yield return new GetHashCodeValueCheckAssertion(equalityTestCaseProvider);
             yield return new GetHashCodeSuccessiveAssertion(specimenBuilder);
